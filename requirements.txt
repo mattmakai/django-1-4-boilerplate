@@ -1,0 +1,7 @@
+Django==1.4
+wsgiref
+gunicorn
+Fabric
+django-debug-toolbar
+MySQL-python
+django-shortcuts

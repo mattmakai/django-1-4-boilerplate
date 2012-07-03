@@ -55,19 +55,19 @@ def rebuild_db():
 def dumpdata(filename):
   proj_dir = env.directory + env.project_name
   virtualenv('python ' + proj_dir + \
-    '/manage.py dumpdata auth.User auth.Group ' + proj_dir + \
-      '/core/fixtures/' + filename )
+    '/manage.py dumpdata auth.User auth.Group ' + env.dumpmodels + \
+    ' ' + proj_dir + '/core/fixtures/' + filename)
     
 
 def upload_keys(username):
   local('scp ~/.ssh/id_rsa ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys2 ' + \
-    '~/.ssh/matt_amazon.pem ' + username + '@' + SERVER_IP + ':~/.ssh')
+    username + '@' + SERVER_IP + ':~/.ssh')
 
 
 def clone_repo():
   with cd(env.directory):
     run('git clone %s %s' % (env.git_repo, env.project_name))
-    run('chown -R %s %s' % (env.user, env.project_name))
+    run('chown -R %s %s' % (env.non_root_user, env.project_name))
     run('chgrp -R %s %s' % (env.user_group, env.project_name))
 
 
@@ -180,7 +180,6 @@ def initial_prod_setup():
   mysql_create_user_and_schema()
   run('cp ~/%s/deploy/deploy.sh ~/deploy.sh' % env.project_name)
   run('cp ~/%s/deploy/vim/.vimrc ~/.vimrc' % env.project_name)
-  sudo('cp ~/%s/deploy/aws/boto.cfg /etc/' % env.project_name)
   run('mkdir ~/venvs')
   run('virtualenv --distribute ~/venvs/%s' % env.project_name)
   virtualenv('pip install -r ~/%s/requirements.txt' % env.project_name)

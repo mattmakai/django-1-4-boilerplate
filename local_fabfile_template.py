@@ -1,8 +1,8 @@
 from fabric.api import *
 
-SERVER_IP = '' # ex: '50.116.62.11'
+SERVER_IP = '' # remote server for deployment, ex: '50.116.62.11'
 
-def localhost():
+def lh():
   env.hosts = [''] # ex: matt@localhost
   env.db_user = '' # ex: sqladmin
   env.db_passwd = ''
@@ -10,11 +10,12 @@ def localhost():
   env.directory = '' # ex: /home/matt/devel/py/
   env.deploy_dir = '' # ex: /home/matt/devel/py/ec/
   env.activate = '' # ex: source /home/matt/devel/venvs/app/bin/activate
+  env.dumpmodels = '' # ex: core.Excellian core.Title contacts.Contact
 
 
 def root():
-  env.hosts = [env.root + '@' + SERVER_IP]
   common()
+  env.hosts = [env.root + '@' + SERVER_IP]
 
 
 def prod():
@@ -36,5 +37,6 @@ def common():
   env.db_passwd = ''
   env.db_schema = '' # ex: appschema
   env.activate = '' # ex: source /home/app/venvs/app/bin/activate
-  env.git_repo = '' # ex: 'git@github.com:makaimc/app.git'
+  env.git_repo = '' # ex: git@github.com:makaimc/app.git
+  env.dumpmodels = '' # ex: core.Excellian core.Title contacts.Contact
 

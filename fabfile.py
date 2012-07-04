@@ -122,7 +122,8 @@ def initial_root_setup():
   # update and install packages
   run('apt-get update')
   run('apt-get install -y git-core build-essential pip python-dev vim ' + \
-    'python-setuptools python-mysqldb libmysqlclient-dev supervisor')
+    'python-setuptools python-mysqldb libmysqlclient-dev supervisor ' + \
+    'libcurl4-openssl-dev python-pycurl')
   #run('apt-get -y --force-yes upgrade')
   # add group and user
   create_privileged_group()

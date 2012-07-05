@@ -11,7 +11,9 @@ def lh():
   env.deploy_dir = '' # ex: /home/matt/devel/py/ec/
   env.activate = '' # ex: source /home/matt/devel/venvs/app/bin/activate
   env.dumpmodels = '' # ex: core.Excellian core.Title contacts.Contact
-
+  env.load_fixtures = '' # ex: core/fixtures/test-fixtures.json
+  env.generate_ssl_cert = False
+  env.copy_ssl_certs = False
 
 def root():
   common()
@@ -39,4 +41,6 @@ def common():
   env.activate = '' # ex: source /home/app/venvs/app/bin/activate
   env.git_repo = '' # ex: git@github.com:makaimc/app.git
   env.dumpmodels = '' # ex: core.Excellian core.Title contacts.Contact
-
+  env.load_fixtures = '' # ex: core/fixtures/test-fixtures.json
+  env.generate_ssl_cert = False
+  env.copy_ssl_certs = True

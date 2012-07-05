@@ -49,8 +49,9 @@ def rebuild_db():
     env.db_passwd, env.db_schema))
   virtualenv('python %smanage.py syncdb --noinput' % \
     env.deploy_dir)
-  virtualenv('python %smanage.py loaddata %s/core/fixtures/test.json' % \
-    (env.deploy_dir, env.deploy_dir))
+  if env.load_fixtures != '':
+    virtualenv('python %smanage.py loaddata %s/%s' % \
+      (env.deploy_dir, env.deploy_dir, env.load_fixtures))
 
 def dumpdata(filename):
   proj_dir = env.directory + env.project_name
@@ -165,11 +166,18 @@ def generate_ssl_cert():
     sudo('openssl genrsa -des3 -out %s.key 4096' % env.project_name)
     sudo('openssl req -new -key %s -out %s' % \
       (env.project_name + '.key', env.project_name + '.csr'))
-    sudo('openssl x509 -req -days 730 -in %s.csr -signkey %s.key ' + \
-      '-out %s.crt' % (env.project_name, env.project_name, env.project_name))
+    sudo('openssl x509 -req -days 730 -in ' + env.project_name + \
+      '.csr -signkey ' + env.project_name + '.key -out ' + \
+      env.project_name + '.crt')
     sudo('chmod 600 %s.*' % env.project_name)
-    sudo('mkdir /etc/nginx/%s' % env.project_name)
     sudo('mv %s.* /etc/nginx/%s/' % (env.project_name, env.project_name))
+
+
+def copy_ssl_cert():
+  sudo('cp ~/' + env.project_name + \
+    '/deploy/ssl/' + env.project_name + '.sslchain.crt ~/' + \
+    env.project_name + '/deploy/ssl/' + \
+    env.project_name + '.key /etc/nginx/' + env.project_name + '/')
 
 
 def initial_prod_setup():
@@ -184,11 +192,17 @@ def initial_prod_setup():
   run('mkdir ~/venvs')
   run('virtualenv --distribute ~/venvs/%s' % env.project_name)
   virtualenv('pip install -r ~/%s/requirements.txt' % env.project_name)
-  #generate_ssl_cert()
+  sudo('mkdir /etc/nginx/%s' % env.project_name)
+  if env.generate_ssl_cert:
+    generate_ssl_cert()
+  if env.copy_ssl_certs:
+    copy_ssl_cert()
+  run('git config --global user.email "makaimc@gmail.com"')
+  run('git config --global user.name "Matthew Makai"')
+  run('mv ~/%s/%s/local_settings_prod.py ~/%s/%s/local_settings.py' %
+    (env.project_name, env.project_name, env.project_name, env.project_name))
   run('~/deploy.sh')
-  virtualenv('python %smanage.py syncdb --noinput' % (env.deploy_dir))
-  virtualenv('python %smanage.py loaddata %s' % (env.deploy_dir, 
-    env.deploy_dir + 'core/fixtures/test.json'))
+  rebuild_db()
 
 
 def deploy():

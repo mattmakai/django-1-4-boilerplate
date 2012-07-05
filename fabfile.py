@@ -179,6 +179,9 @@ def copy_ssl_cert():
     env.project_name + '/deploy/ssl/' + \
     env.project_name + '.key /etc/nginx/' + env.project_name + '/')
 
+def setup_git_user():
+  run('git config --global user.email "makaimc@gmail.com"')
+  run('git config --global user.name "Matthew Makai"')
 
 def initial_prod_setup():
   """
@@ -197,8 +200,7 @@ def initial_prod_setup():
     generate_ssl_cert()
   if env.copy_ssl_certs:
     copy_ssl_cert()
-  run('git config --global user.email "makaimc@gmail.com"')
-  run('git config --global user.name "Matthew Makai"')
+  setup_git_user()
   run('mv ~/%s/%s/local_settings_prod.py ~/%s/%s/local_settings.py' %
     (env.project_name, env.project_name, env.project_name, env.project_name))
   run('~/deploy.sh')
